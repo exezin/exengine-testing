@@ -1,6 +1,6 @@
 # exengine, a C 3D game engine.
 
-**This engine is far from complete**
+[Discuss](https://webchat.freenode.net/##oodnet) | [Website](https://exez.in/exengine) | [TODO](https://github.com/exezin/exengine/projects/1)
 
 ### What exactly is exengine?
 exengine is a 3d engine that takes a slightly different approach than other libraries and engines do, in that it's a code-base you include directly into your own.  Rather than using it as a static/shared library.
@@ -28,10 +28,19 @@ Assuming you don't want to set up your own build system (I can't blame you), you
 * Various cameras
 * [More to come..](https://github.com/exezin/exengine/projects/1)
 
-### Depends
+### (External) Depends
 * A C99 compiler, preferably gcc. Clang and others should also work
 * OpenGL 3.3+
 * SDL2
+
+### Credits
+* [SDL2](https://www.libsdl.org/index.php)
+* [MojoAL](https://hg.icculus.org/icculus/mojoAL/)
+* [PhysFS](https://icculus.org/physfs/)
+* [STB](https://github.com/nothings/stb)
+* [Linmath](https://github.com/datenwolf/linmath.h)
+* [IQM](http://sauerbraten.org/iqm/)
+* [GLAD](https://github.com/Dav1dde/glad)
 
 ### Getting Started
 #### Documentation
