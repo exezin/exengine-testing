@@ -151,7 +151,10 @@ ex_source_t* ex_sound_load(const char *path, int type, int looping)
   alSource3f(s->id, AL_POSITION, 0, 0, 0);
   alSource3f(s->id, AL_VELOCITY, 0, 0, 0);
   alSourcei(s->id, AL_LOOPING, s->looping);
-  alSourcei(s->id, AL_SOURCE_TYPE, AL_STREAMING);
+  if (type == EX_SOURCE_STREAMING)
+    alSourcei(s->id, AL_SOURCE_TYPE, AL_STREAMING);
+  else
+    alSourcei(s->id, AL_SOURCE_TYPE, AL_STATIC);
 
   if (s->streaming) {
     // 3 buffer queue
