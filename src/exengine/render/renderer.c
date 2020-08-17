@@ -44,7 +44,7 @@ void ex_render_init()
     &default_texture_normal,
     &default_texture_specular
   };
-  
+
   char colors[][4] = {
     {0,0,0,255},
     {128,127,255,255},
@@ -112,7 +112,7 @@ void ex_render(ex_renderer_e renderer, ex_renderable_t *renderables)
   ex_shader_use(pointfbo_shader);
   for (int i=0; i<point_lights->count; i++) {
     ex_point_light_t *light = (ex_point_light_t*)point_lights->nodes[i].obj;
-  
+
     if ((light->dynamic || light->update) && light->is_shadow && light->is_visible) {
       ex_render_point_light_begin(light, pointfbo_shader);
 
@@ -181,7 +181,7 @@ void ex_render_forward(ex_renderable_t *renderables)
   size_t pcount = 0;
   for (int i=0; i<point_lights->count; i++) {
     ex_point_light_t *light = (ex_point_light_t*)point_lights->nodes[i].obj;
-  
+
     if (light->is_visible && !light->is_shadow) {
       sprintf(buff, "u_point_lights[%u]", (uint32_t)pcount++);
       ex_render_point_light(light, forward_shader, buff);
@@ -198,7 +198,7 @@ void ex_render_forward(ex_renderable_t *renderables)
   glUniform1i(ex_uniform(forward_shader, "u_ambient_pass"), 0);
   glUniform1i(ex_uniform(forward_shader, "u_point_count"), 0);
   /* ------------ */
-  
+
 
   /* SECOND PASS */
   // enable blending for second pass onwards
@@ -209,7 +209,7 @@ void ex_render_forward(ex_renderable_t *renderables)
   glUniform1i(ex_uniform(forward_shader, "u_point_active"), 1);
   for (int i=0; i<point_lights->count; i++) {
     ex_point_light_t *light = (ex_point_light_t*)point_lights->nodes[i].obj;
-  
+
     if (!light->is_shadow || !light->is_visible)
       continue;
 
@@ -268,7 +268,7 @@ void ex_render_model(ex_model_t *model, GLuint shader)
     GLvoid *ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
     memcpy(ptr, &model->transforms[0], model->instance_count * sizeof(mat4x4));
     glUnmapBuffer(GL_ARRAY_BUFFER);
-    
+
     if (model->is_static)
       model->is_static = 2;
   }
@@ -350,7 +350,7 @@ void ex_render_point_light_begin(ex_point_light_t *light, GLuint shader)
   vec3_add(temp, light->position, (vec3){0.0f, 0.0f, 1.0f});
   mat4x4_look_at(light->transform[4], light->position, temp, (vec3){0.0f, -1.0f, 0.0f});
   mat4x4_mul(light->transform[4], projection_90deg, light->transform[4]);
-  
+
   vec3_add(temp, light->position, (vec3){0.0f, 0.0f, -1.0f});
   mat4x4_look_at(light->transform[5], light->position, temp, (vec3){0.0f, -1.0f, 0.0f});
   mat4x4_mul(light->transform[5], projection_90deg, light->transform[5]);
@@ -378,9 +378,9 @@ void ex_render_point_light(ex_point_light_t *light, GLuint shader, const char *p
 {
   if (light->is_shadow) {
     glUniform1i(ex_uniform(shader, "u_point_light.is_shadow"), 1);
-    
+
     glUniform1i(ex_uniform(shader, "u_point_depth"), 7);
-    
+
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_CUBE_MAP, light->depth_map);
   } else if (prefix != NULL) {
@@ -412,10 +412,10 @@ void ex_render_resize(size_t width, size_t height)
 
   framebuffer.width = display.width;
   framebuffer.height = display.height;
-     
+
   glBindTexture(GL_TEXTURE_2D, framebuffer.cbo);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB10_A2, framebuffer.width, framebuffer.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-  
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);

@@ -13,9 +13,9 @@
 uint32_t *ex_vga_data = NULL;
 uint32_t ex_vga_fg = 0xFFFFFFFF, ex_vga_bg = 0x00000000;
 size_t ex_vga_len = 0;
-GLuint texture, shader, vao, vbo;
-GLfloat vertices[24];
-mat4x4 projection;
+GLuint vga_texture, vga_shader, vga_vao, vga_vbo;
+GLfloat vga_vertices[24];
+mat4x4 vga_projection;
 
 void ex_vga_init()
 {
@@ -23,9 +23,9 @@ void ex_vga_init()
     free(ex_vga_data);
   } else {
     // gen texture
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, 
+    glGenTextures(1, &vga_texture);
+    glBindTexture(GL_TEXTURE_2D, vga_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0,
       GL_RGBA, EX_VGA_WIDTH, EX_VGA_HEIGHT, 0,
       GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
 
@@ -35,7 +35,7 @@ void ex_vga_init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
     // load shader
-    shader = ex_shader("vga.glsl");
+    vga_shader = ex_shader("vga.glsl");
 
     // set up vao, vbo etc
     float w = EX_VGA_WIDTH;
@@ -51,21 +51,21 @@ void ex_vga_init()
       0.0f+w, 0.0f,   u1,  v0,
       0.0f+w, 0.0f+h, u1,  v1
     };
-    memcpy(vertices, v, sizeof(GLfloat)*24);
+    memcpy(vga_vertices, v, sizeof(GLfloat)*24);
 
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
+    glGenVertexArrays(1, &vga_vao);
+    glGenBuffers(1, &vga_vbo);
 
     uint32_t stride = sizeof(GLfloat) * 4;
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindVertexArray(vga_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vga_vbo);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*24, vga_vertices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)0);
-    
+
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)(sizeof(GLfloat) * 2));
 
@@ -90,7 +90,7 @@ void ex_vga_print(size_t x, size_t y, const char *str)
   uint8_t *font = ex_vga_font_array;
   for (int i=0; i<strlen(str); i++) {
     size_t c = (str[i]*16);
-    
+
     if (c > EX_VGA_FONT_DATA_LEN)
       c = 0;
 
@@ -110,7 +110,7 @@ void ex_vga_print(size_t x, size_t y, const char *str)
         int color = (byte >> k) & 0x01;
         if (color)
           ex_vga_data[p+(8-k)] = ex_vga_fg;
-        else 
+        else
           ex_vga_data[p+(8-k)] = ex_vga_bg;
       }
     }
@@ -121,20 +121,20 @@ void ex_vga_print(size_t x, size_t y, const char *str)
 
 void ex_vga_render()
 {
-  mat4x4_ortho(projection, 0.0f, display.width, display.height, 0.0f, -1.0f, 1.0f);
+  mat4x4_ortho(vga_projection, 0.0f, display.width, display.height, 0.0f, -1.0f, 1.0f);
   glViewport(0, 0, display.width, display.height);
 
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 
+  glBindTexture(GL_TEXTURE_2D, vga_texture);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
     EX_VGA_WIDTH, EX_VGA_HEIGHT,
     GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, ex_vga_data);
 
-  glUseProgram(shader);
-  glBindVertexArray(vao);
+  glUseProgram(vga_shader);
+  glBindVertexArray(vga_vao);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glUniform1i(ex_uniform(shader, "u_texture"), 0);
-  glUniformMatrix4fv(ex_uniform(shader, "u_projection"), 1, GL_FALSE, projection[0]);
+  glBindTexture(GL_TEXTURE_2D, vga_texture);
+  glUniform1i(ex_uniform(vga_shader, "u_texture"), 0);
+  glUniformMatrix4fv(ex_uniform(vga_shader, "u_projection"), 1, GL_FALSE, vga_projection[0]);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
   glEnable(GL_BLEND);
@@ -172,7 +172,7 @@ void ex_vga_destroy()
   if (ex_vga_data) {
     free(ex_vga_data);
 
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
+    glDeleteVertexArrays(1, &vga_vao);
+    glDeleteBuffers(1, &vga_vbo);
   }
 }

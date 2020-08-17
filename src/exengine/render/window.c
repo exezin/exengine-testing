@@ -44,7 +44,7 @@ int ex_window_init(uint32_t width, uint32_t height, const char *title)
 
   // set vsync
   SDL_GL_SetSwapInterval(0);
-  
+
   // set viewport etc
   glViewport(0, 0, width, height);
   glEnable(GL_DEPTH_TEST);

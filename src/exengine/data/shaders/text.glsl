@@ -8,7 +8,7 @@ out vec2 uv;
 
 uniform mat4 u_projection;
 
-void main() 
+void main()
 {
   gl_Position = u_projection * vec4(in_position.x, in_position.y, 0.0f, 1.0f);
   uv = in_uv;

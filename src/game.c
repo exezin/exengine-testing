@@ -22,7 +22,7 @@ void game_init()
   m6 = ex_iqm_load_model(scene, "data/level.iqm", EX_KEEP_VERTICES);
   m6->is_shadow = 1;
   ex_scene_add_model(scene, m6);
- 
+
   e = ex_entity_new(scene, (vec3){0.5f, 1.0f, 0.5f});
   e->position[1] = 10.0f;
   e->position[0] = 5.0f;
@@ -86,7 +86,7 @@ void game_update(double dt, double ft)
     vec3_scale(p, camera->front, 2.5f);
     vec3_add(p, p, e->position);
     p[1] += 0.5f;
-    
+
     vec3_sub(p, p, cube->position);
 
     float f = vec3_len(p);
@@ -103,7 +103,7 @@ void game_update(double dt, double ft)
     f = cube->velocity[1];
     memcpy(cube->velocity, p, sizeof(vec3));
     cube->velocity[1] += f*0.1f;
-  
+
     if (ex_buttons_down[SDL_BUTTON_RIGHT]) {
       vec3_scale(temp, camera->front, 80.0f);
       vec3_add(cube->velocity, cube->velocity, temp);
@@ -113,7 +113,7 @@ void game_update(double dt, double ft)
 ctrl_end:
 
   if (ex_keys_down[SDL_SCANCODE_F]) {
-    float r = (float)rand()/(float)(RAND_MAX/1.0f); 
+    float r = (float)rand()/(float)(RAND_MAX/1.0f);
     float g = (float)rand()/(float)(RAND_MAX/1.0f);
     float b = (float)rand()/(float)(RAND_MAX/1.0f);
     ex_point_light_t *l = ex_point_light_new((vec3){0.0f, 0.0f, 0.0f}, (vec3){r, g, b}, 0);
@@ -127,11 +127,11 @@ ctrl_end:
   vec3_scale(temp, e->velocity, 15.0f * dt);
   temp[1] = 0.0f;
 
-  if (e->grounded == 1) 
+  if (e->grounded == 1)
    vec3_sub(e->velocity, e->velocity, temp);
   else
     move_speed = 50.0f;
-  
+
   e->velocity[1] -= (100.0f * dt);
 
   vec3 speed, side;
@@ -143,7 +143,7 @@ ctrl_end:
   }
   if (ex_keys_down[SDL_SCANCODE_S]) {
     vec3_norm(speed, (vec3){camera->front[0], 0.0f, camera->front[2]});
-    vec3_scale(speed, speed, move_speed * dt); 
+    vec3_scale(speed, speed, move_speed * dt);
     speed[1] = 0.0f;
     vec3_sub(e->velocity, e->velocity, speed);
   }
@@ -170,13 +170,13 @@ ctrl_end:
   }
   ex_sound_play(sound);
   move_speed = 100.0f;
-    
+
 
   memcpy(pl->position, e->position, sizeof(vec3));
   pl->position[1] += 1.0f;
   ex_scene_update(scene, dt);
   ex_fps_camera_update(camera);
-  
+
   ex_vga_clear();
 
   char buf[64];
@@ -184,7 +184,7 @@ ctrl_end:
   ex_vga_setbg(0, 0, 0, 255);
   sprintf(buf, "exengine dbg build %c", 1);
   ex_vga_print(2, 1, buf);
-  
+
   sprintf(buf, "framerate %.2f", 1.0 / ft);
   ex_vga_setfg(255, 255, 0, 255);
   ex_vga_setbg(255, 255, 255, 0);
@@ -195,8 +195,8 @@ void game_draw()
 {
   ex_scene_draw(scene, 0, 0, 0, 0, &camera->matrices);
   ex_fps_camera_resize(camera);
-  
-  // ex_font_dbg(font);
+
+  ex_font_dbg(font);
 
   ex_vga_render();
 }

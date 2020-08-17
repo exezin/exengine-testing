@@ -15,18 +15,18 @@
 // increase to sharpen, decrease (down to 0) to smooth/blur
 #define AA_BIAS 0.5
 
-GLuint shader, vao, vbo;
+GLuint text_shader, text_vao, text_vbo;
 mat4x4 projection;
 
 void ex_font_init()
 {
-  shader = ex_shader("text.glsl");
+  text_shader = ex_shader("text.glsl");
 
-  glGenVertexArrays(1, &vao);
-  glGenBuffers(1, &vbo);
+  glGenVertexArrays(1, &text_vao);
+  glGenBuffers(1, &text_vbo);
 
-  glBindVertexArray(vao);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBindVertexArray(text_vao);
+  glBindBuffer(GL_ARRAY_BUFFER, text_vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24, NULL, GL_DYNAMIC_DRAW);
 
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*4, (GLvoid*)0);
@@ -137,14 +137,15 @@ void ex_font_dbg(ex_font_t *f)
   w += 112.0f * cos(t * 0.5);
   h += 112.0f * cos(t * 0.5);
 
-  glUseProgram(shader);
-  glBindVertexArray(vao);
+  glUseProgram(text_shader);
+  glBindVertexArray(text_vao);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, f->texture);
-  glUniform1i(ex_uniform(shader, "u_texture"), 0);
-  glUniform1f(ex_uniform(shader, "u_scale"), (w/SIZE) * AA_BIAS);
-  glUniformMatrix4fv(ex_uniform(shader, "u_projection"), 1, GL_FALSE, projection[0]);
+  glUniform1i(ex_uniform(text_shader, "u_texture"), 0);
+  glUniform1f(ex_uniform(text_shader, "u_scale"), (w/SIZE) * AA_BIAS);
+  glUniformMatrix4fv(ex_uniform(text_shader, "u_projection"), 1, GL_FALSE, projection[0]);
   glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glViewport(0, 0, 1280, 720);
 
   float x = 32.0f, y = 0.0f, sy = 32.0f;
@@ -182,7 +183,7 @@ void ex_font_dbg(ex_font_t *f)
       x+w, y+h,  f->uv[iuv+10], f->uv[iuv+11]
     };
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, text_vbo);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
