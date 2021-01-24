@@ -27,7 +27,7 @@ enum {
   OBJ_TYPE_FLOAT,
   OBJ_TYPE_DOUBLE,
   OBJ_TYPE_NULL
-} ex_ex_octree_obj_type;
+} ex_octree_obj_type;
 
 typedef struct {
   union {

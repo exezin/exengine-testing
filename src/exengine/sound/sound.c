@@ -11,6 +11,9 @@ ex_sound_devices_t *ex_sound_inputs = NULL;
 
 void ex_sound_init()
 {
+  // initialize al api
+  alcOpenDevice(NULL);
+  
   // reset AL error stack
   alGetError();
 

@@ -23,12 +23,12 @@ CFLAGS +=-std=c99 -O2
 # -- Windows -- #
 ifeq ($(OS),Windows_NT)
 CC    =x86_64-w64-mingw32-gcc
-FLAGS   =-g -lm -static -static-libgcc -static-libstdc++ -lstdc++ \
--Llib/win -lopengl32 -lSDL2main -lSDL2 -I. $(IDIRS)
+FLAGS   =-Wl,-Bstatic -g -lm -static -static-libgcc -static-libstdc++ -lstdc++ \
+-Llib/win -lopengl32 -lmingw32 -Wl,-Bdynamic -lSDL2main -lSDL2 -I. $(IDIRS)
 FLAGS  +=-Llib/win/dll
 #
 CFLAGS  =$(FLAGS)
-CFLAGS +=-std=c99
+CFLAGS +=-std=c99 -DAL_LIBTYPE_STATIC
 BNAME   =game.exe
 endif
 
