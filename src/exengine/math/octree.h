@@ -20,7 +20,7 @@
 #define EX_OCTREE_DEFAULT_MIN_SIZE 5.0f
 extern int ex_octree_min_size;
 
-enum {
+typedef enum {
   OBJ_TYPE_UINT,
   OBJ_TYPE_INT,
   OBJ_TYPE_BYTE,
